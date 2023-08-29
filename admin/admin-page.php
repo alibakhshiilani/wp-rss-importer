@@ -55,3 +55,25 @@ function import_rss_posts() {
         }
     }
 }
+
+
+function fetch_rss($url) {
+    $rss_content = file_get_contents($url);
+    
+    if ($rss_content === false) {
+        return [];
+    }
+    
+    $rss = simplexml_load_string($rss_content, 'SimpleXMLElement', LIBXML_NOCDATA);
+    
+    $items = [];
+    foreach ($rss->channel->item as $item) {
+        $items[] = [
+            'title' => (string)$item->title,
+            'link' => (string)$item->link,
+            'description' => (string)$item->description,
+        ];
+    }
+    
+    return $items;
+}
